@@ -4,8 +4,8 @@ from _collections import OrderedDict
 import helper
 pygame.init()
 
-WIN_HEIGHT = 600
-WIN_WIDTH = 800
+WIN_HEIGHT = 640
+WIN_WIDTH = 360
 BACKGROUND_COLOUR = (0, 0, 0)
 
 
@@ -44,17 +44,22 @@ sprites = {
 }
 
 sprites["cookie"].set_colorkey((255, 255, 255))
+sprites["cookie"] = pygame.transform.scale(sprites["cookie"], (200, 200))
 sprites["background"] = pygame.transform.scale2x(sprites["background"])
 
 objects["cookie"].sprite = sprites["cookie"]
 objects["cookie"].x = int(WIN_WIDTH/2)
-objects["cookie"].y = 300
+objects["cookie"].y = int(WIN_HEIGHT/2)
+
 
 objects["background"].sprite = sprites["background"]
 objects["background"].x = int(WIN_WIDTH/2)
 objects["background"].y = int(WIN_HEIGHT/2)
+objects["background"].center_x = int(WIN_WIDTH/2)
+objects["background"].center_y = int(WIN_HEIGHT/2)
 
-objects["background"].actions_push(lambda: helper.rotate(obj=objects["background"], amount=0.5))
+
+objects["background"].actions_push(lambda: helper.rotate(objects["background"], 0.5))
 
 END_FLAG = True
 
@@ -69,8 +74,6 @@ while END_FLAG:
             END_FLAG = False
 
     run_functions()
-
-    print(objects["background"].x, objects["background"].x)
 
     draw_objects()
 
