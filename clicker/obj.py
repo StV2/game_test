@@ -9,7 +9,7 @@ class Obj:
         self.__y = None
         self.__center_y = None
         self.__rotation = 0
-        self.__actions = []
+        self._actions = [lambda: ()]
 
     @property
     def sprite(self):
@@ -23,9 +23,14 @@ class Obj:
     def sprite(self, value):
         if self.__spr is None:
             self.__master_spr = value.copy()
-
-        print("setting_sprite")
+            if self.__x is not None and self.__y is not None:
+                self.__master_spr.get_rect().x = self.__x
+                self.__master_spr.get_rect().y = self.__y
         self.__spr = value
+
+        if self.__x is not None and self.__y is not None:
+            self.__spr.get_rect().x = self.__x
+            self.__spr.get_rect().y = self.__y
 
     @property
     def x(self):
@@ -40,6 +45,10 @@ class Obj:
         offset = int(self.__spr.get_width() / 2)
         self.__x = value - offset
 
+        if self.__x is not None and self.__y is not None:
+            self.__spr.get_rect().x = self.__x
+            self.__spr.get_rect().y = self.__y
+
     @property
     def y(self):
         if self.__y is not None:
@@ -52,6 +61,10 @@ class Obj:
     def y(self, value):
         offset = int(self.__spr.get_height() / 2)
         self.__y = value - offset
+
+        if self.__x is not None and self.__y is not None:
+            self.__spr.get_rect().x = self.__x
+            self.__spr.get_rect().y = self.__y
 
     @property
     def center_x(self):
@@ -79,17 +92,17 @@ class Obj:
 
     @property
     def actions(self):
-        return self.__actions
+        return self._actions
 
     @actions.setter
     def actions(self, value):
-        self.__actions = value
+        self._actions = value
 
     def actions_pop(self):
-        return self.__actions.pop()
+        return self._actions.pop()
 
     def actions_push(self, value):
-        self.__actions.append(value)
+        self._actions.append(value)
 
     @property
     def rotation(self):

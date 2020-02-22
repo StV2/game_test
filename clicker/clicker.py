@@ -1,5 +1,6 @@
 import pygame
 from obj import Obj
+from interactive_obj import InteractiveObj
 from _collections import OrderedDict
 import helper
 pygame.init()
@@ -7,7 +8,7 @@ pygame.init()
 WIN_HEIGHT = 640
 WIN_WIDTH = 360
 BACKGROUND_COLOUR = (0, 0, 0)
-
+EVENTS = None
 
 display = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 
@@ -26,7 +27,10 @@ def update_display():
 def run_functions():
     for key in objects:
         for action in objects[key].actions:
-            action()
+            try:
+                action()
+            except TypeError:
+                action(EVENTS)
 
 def draw_objects():
     for key in objects:
@@ -36,7 +40,7 @@ def draw_objects():
 
 objects = OrderedDict()
 objects["background"] = Obj()
-objects["cookie"] = Obj()
+objects["cookie"] = InteractiveObj()
 
 sprites = {
     "background": pygame.image.load("resources/background.jpg"),
@@ -58,8 +62,9 @@ objects["background"].y = int(WIN_HEIGHT/2)
 objects["background"].center_x = int(WIN_WIDTH/2)
 objects["background"].center_y = int(WIN_HEIGHT/2)
 
-
 objects["background"].actions_push(lambda: helper.rotate(objects["background"], 0.5))
+
+objects["cookie"].events(pygame.MOUSEBUTTONDOWN, lambda: helper.add_score(objects["cookie"], 6))
 
 END_FLAG = True
 
@@ -69,7 +74,9 @@ white.fill((255, 255, 255))
 while END_FLAG:
     clear_display()
 
-    for event in pygame.event.get():
+    EVENTS = pygame.event.get()
+
+    for event in EVENTS:
         if event.type == pygame.QUIT:
             END_FLAG = False
 
